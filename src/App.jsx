@@ -3,6 +3,28 @@ import Timer from './components/Timer';
 import LogList from './components/LogList';
 import TodoList from './components/TodoList';
 import Motivation from './components/Motivation';
+import AudioPlayer from './components/AudioPlayer';
+import DarkVeil from './components/DarkVeil';
+import ImageTrail from './components/ImageTrail';
+
+// Import all images
+import img1 from './assets/1955f4a075af0691b6487a5694ec93d6.jpg';
+import img2 from './assets/2fe371dfdfbeaf441dd611cb3b492bd3.jpg';
+import img3 from './assets/452269f45d2adff20e329f85234b384a.jpg';
+import img4 from './assets/5cfb0fe794bfa99233ae033848a6c712.jpg';
+import img5 from './assets/6e3eb22d3cb436a8bd0466d9e1a6a8bf.jpg';
+import img6 from './assets/6e91ec2bf3ac22b7e4984dc324590574.jpg';
+import img7 from './assets/6fa5c0bc475a26fc1d47ff1202262e1e.jpg';
+import img8 from './assets/9502eb77932226efa7b1df10cf6e4b9d.jpg';
+import img9 from './assets/a51a0cf65dbb2c05da8d47e53cbbc4f7.jpg';
+import img10 from './assets/a59ea9071920e38c38ad053f61db0205.jpg';
+import img11 from './assets/aedc4104ae146f0bab9f6476628b7980.jpg';
+import img12 from './assets/aef4b80c24f454e4b800268cbe77c833.jpg';
+import img13 from './assets/be63c84f436343773b00a9cecf12d33c.jpg';
+import img14 from './assets/cc70da908fc7bf22fa2eb9e66ffe0b27.jpg';
+import img15 from './assets/d9464ab8fccd527bfb584a41ffa86586.jpg';
+import img16 from './assets/e3a3a290622469edbfc5f1407e3905ba.jpg';
+import img17 from './assets/fb56d508e31b3d7f7c9c97550b9eb98f.jpg';
 import mountainBg from './assets/killjaro.jpg';
 
 function App() {
@@ -13,6 +35,12 @@ function App() {
   const [timerDuration, setTimerDuration] = useState(15); // in minutes
   const [showSettings, setShowSettings] = useState(false);
   const [customDuration, setCustomDuration] = useState('');
+
+  // Array of motivational images
+  const motivationalImages = [
+    mountainBg, img1, img2, img3, img4, img5, img6, img7, img8, img9,
+    img10, img11, img12, img13, img14, img15, img16, img17
+  ];
 
   // Load logs from localStorage on mount
   useEffect(() => {
@@ -138,14 +166,29 @@ function App() {
   };
 
   return (
-    <div 
-      className="min-h-screen py-12 px-4 bg-cover bg-center bg-fixed"
-      style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85)), url(${mountainBg})`
-      }}
-    >
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-black text-center mb-8">
+    <>
+      {/* Light Veil Background */}
+      <div className="fixed inset-0 z-0 bg-white">
+        <div style={{ 
+          width: '100%', 
+          height: '100%', 
+          filter: 'invert(1) hue-rotate(20deg) brightness(1.2) saturate(0.8)',
+          opacity: 0.4
+        }}>
+          <DarkVeil 
+            hueShift={200}
+            noiseIntensity={0.01}
+            scanlineIntensity={0.05}
+            warpAmount={0.4}
+            speed={0.3}
+          />
+        </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className="relative z-10 min-h-screen py-12 px-4">
+        <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold text-gray-900 text-center mb-8" style={{ textShadow: '2px 2px 8px rgba(255,165,0,0.3)' }}>
           Next 15
         </h1>
 
@@ -245,19 +288,31 @@ function App() {
             <LogList logs={logs} onDeleteLog={handleDeleteLog} />
           </div>
 
-          {/* Right Column - Todo List */}
-          <div>
-            <TodoList
-              todos={todos}
-              onAddTodo={handleAddTodo}
-              onToggleTodo={handleToggleTodo}
-              onDeleteTodo={handleDeleteTodo}
-            />
+          {/* Right Column - Todo List and Mountain Image */}
+          <div className="flex flex-col gap-8">
+            <div className="flex-shrink-0">
+              <TodoList
+                todos={todos}
+                onAddTodo={handleAddTodo}
+                onToggleTodo={handleToggleTodo}
+                onDeleteTodo={handleDeleteTodo}
+              />
+            </div>
+
+            {/* Interactive Image Trail */}
+            <div className="bg-white/80 backdrop-blur-sm border border-gray-300 rounded-2xl shadow-lg flex-shrink-0 relative" style={{ height: '500px', overflow: 'hidden' }}>
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm pointer-events-none z-0">
+                Make this your life
+              </div>
+              <ImageTrail items={motivationalImages} variant={2} />
+            </div>
           </div>
+        </div>
         </div>
       </div>
       <Motivation />
-    </div>
+      <AudioPlayer />
+    </>
   );
 }
 

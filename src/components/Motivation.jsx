@@ -10,7 +10,9 @@ const quotes = [
   "Quality over quantity.",
   "Start where you are. Use what you have. Do what you can.",
   "The secret of getting ahead is getting started.",
-  "Don't wait for opportunity. Create it."
+  "Don't wait for opportunity. Create it.",
+  "No quote will work unless you do.",
+  "I can do anything"
 ];
 
 function Motivation() {
@@ -29,7 +31,7 @@ function Motivation() {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 max-w-sm p-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200">
+    <div className="fixed bottom-4 right-4 max-w-sm p-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 z-50">
       <p className="text-sm text-gray-600 italic">"{quote}"</p>
     </div>
   );
