@@ -3,6 +3,7 @@ import Timer from './components/Timer';
 import LogList from './components/LogList';
 import TodoList from './components/TodoList';
 import Motivation from './components/Motivation';
+import mountainBg from './assets/killjaro.jpg';
 
 function App() {
   const [logText, setLogText] = useState('');
@@ -137,7 +138,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white py-12 px-4">
+    <div 
+      className="min-h-screen py-12 px-4 bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85)), url(${mountainBg})`
+      }}
+    >
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold text-black text-center mb-8">
           Next 15
