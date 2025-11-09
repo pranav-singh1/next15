@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Timer from './components/Timer';
 import LogList from './components/LogList';
 import TodoList from './components/TodoList';
+import Motivation from './components/Motivation';
 
 function App() {
   const [logText, setLogText] = useState('');
@@ -249,6 +250,7 @@ function App() {
           </div>
         </div>
       </div>
+      <Motivation />
     </div>
   );
 }
