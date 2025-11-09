@@ -1,39 +1,67 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import peterSound from '../assets/peter.mp3';
 
-function Timer({ onTimerEnd, started }) {
-  const [seconds, setSeconds] = useState(15 * 60); // 15 minutes in seconds
+function Timer({ onTimerEnd, started, duration = 15 }) {
+  const TIMER_DURATION = duration * 60; // Convert minutes to seconds
+  const [seconds, setSeconds] = useState(TIMER_DURATION);
+  const endTimeRef = useRef(null);
+  const audioRef = useRef(null);
+
+  // Preload audio on component mount
+  useEffect(() => {
+    const alarm = new Audio(peterSound);
+    alarm.preload = 'auto';
+    alarm.volume = 1;
+    audioRef.current = alarm;
+  }, []);
+
+  // Reset timer when duration changes
+  useEffect(() => {
+    setSeconds(TIMER_DURATION);
+    endTimeRef.current = null;
+  }, [TIMER_DURATION]);
 
   useEffect(() => {
-    if (!started) return;
+    if (!started) {
+      endTimeRef.current = null;
+      setSeconds(TIMER_DURATION);
+      return;
+    }
 
+    // Set the end time when timer starts
+    if (!endTimeRef.current) {
+      endTimeRef.current = Date.now() + TIMER_DURATION * 1000;
+    }
+
+    // Use a more frequent check (100ms) for smoother updates
+    // This still works in background tabs because we calculate based on actual time
     const interval = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds <= 1) {
-          // Timer hit 0, trigger alert and restart
-          if (onTimerEnd) {
-            // Use the imported asset URL so Vite resolves the file correctly
-            const alarm = new Audio(peterSound);
-            alarm.preload = 'auto';
-            alarm.volume = 1;
-            // Play returns a promise; catch rejections (autoplay blocked, decode errors)
-            alarm.play().catch((err) => {
-              // Helpful debug info in the console; if autoplay is blocked the user
-              // may need to interact with the page (click) before sounds are allowed.
-              // Optionally, you can show a UI hint to the user here.
+      const now = Date.now();
+      const remaining = Math.ceil((endTimeRef.current - now) / 1000);
+
+      if (remaining <= 0) {
+        // Timer hit 0, trigger alert and restart
+        if (onTimerEnd) {
+          // Play the preloaded audio
+          if (audioRef.current) {
+            audioRef.current.currentTime = 0; // Reset to start
+            audioRef.current.play().catch((err) => {
               // eslint-disable-next-line no-console
               console.warn('Audio play prevented or failed:', err);
             });
-            onTimerEnd();
           }
-          return 15 * 60; // Reset to 15 minutes and keep going
+          onTimerEnd();
         }
-        return prevSeconds - 1;
-      });
-    }, 1000);
+        // Reset timer for next cycle
+        endTimeRef.current = Date.now() + TIMER_DURATION * 1000;
+        setSeconds(TIMER_DURATION);
+      } else {
+        setSeconds(remaining);
+      }
+    }, 100);
 
     return () => clearInterval(interval);
-  }, [started, onTimerEnd]);
+  }, [started, onTimerEnd, TIMER_DURATION]);
 
   const formatTime = (totalSeconds) => {
     const mins = Math.floor(totalSeconds / 60);
